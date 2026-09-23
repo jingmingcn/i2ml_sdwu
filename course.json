@@ -38,7 +38,7 @@
       "id": 2,
       "title": "Supervised Learning",
       "summary": "Classification, regression, and the major algorithm families.",
-      "visible": true,
+      "visible": false,
       "resources": {
         "slides":   { "file": "pdf/02-supervised-learning.pdf", "visible": true },
         "exercise": { "file": "pdf/02-supervised-learning-exercise.pdf", "visible": true },
@@ -49,7 +49,7 @@
       "id": 3,
       "title": "Unsupervised Learning & Preprocessing",
       "summary": "Scaling, dimensionality reduction, and clustering.",
-      "visible": true,
+      "visible": false,
       "resources": {
         "slides":   { "file": "pdf/03-unsupervised-learning.pdf", "visible": true },
         "exercise": { "file": "pdf/03-unsupervised-learning-exercise.pdf", "visible": true },
@@ -60,7 +60,7 @@
       "id": 4,
       "title": "Representing Data & Engineering Features",
       "summary": "Categorical encoding, transformations, and feature selection.",
-      "visible": true,
+      "visible": false,
       "resources": {
         "slides":   { "file": "pdf/04-data-representation.pdf", "visible": true },
         "exercise": { "file": "pdf/04-data-representation-exercise.pdf", "visible": true },
@@ -71,7 +71,7 @@
       "id": 5,
       "title": "Model Evaluation & Improvement",
       "summary": "Cross-validation, grid search, and evaluation metrics.",
-      "visible": true,
+      "visible": false,
       "resources": {
         "slides":   { "file": "pdf/05-model-evaluation.pdf", "visible": true },
         "exercise": { "file": "pdf/05-model-evaluation-exercise.pdf", "visible": true },
@@ -82,7 +82,7 @@
       "id": 6,
       "title": "Algorithm Chains & Pipelines",
       "summary": "Chaining preprocessing and models without leaking data.",
-      "visible": true,
+      "visible": false,
       "resources": {
         "slides":   { "file": "pdf/06-pipelines.pdf", "visible": true },
         "exercise": { "file": "pdf/06-pipelines-exercise.pdf", "visible": true },
@@ -93,7 +93,7 @@
       "id": 7,
       "title": "Working with Text Data",
       "summary": "Bag-of-words, tf-idf, n-grams, and topic modeling.",
-      "visible": true,
+      "visible": false,
       "resources": {
         "slides":   { "file": "pdf/07-text-data.pdf", "visible": true },
         "exercise": { "file": "pdf/07-text-data-exercise.pdf", "visible": true },
@@ -104,7 +104,7 @@
       "id": 8,
       "title": "Wrapping Up",
       "summary": "Workflow, production, and where to go next.",
-      "visible": true,
+      "visible": false,
       "resources": {
         "slides":   { "file": "pdf/08-wrapping-up.pdf", "visible": true },
         "exercise": { "file": "pdf/08-wrapping-up-exercise.pdf", "visible": true },

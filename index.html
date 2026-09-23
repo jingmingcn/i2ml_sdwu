@@ -6,129 +6,286 @@
 <title>Introduction to Machine Learning</title>
 <style>
   :root {
-    --primary: #1f3352;      /* deep navy */
-    --accent:  #8a1c30;      /* burgundy */
-    --ink:     #1c2430;
-    --muted:   #5b6472;
-    --bg:      #fbfaf7;      /* warm paper */
-    --panel:   #ffffff;
-    --panel-2: #f0ece3;
-    --line:    #ddd7cb;
-    --serif:   "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
-    --sans:    "Helvetica Neue", "Segoe UI", "Noto Sans", Arial, sans-serif;
+    --primary: #1e3558;
+    --primary-2: #2d5b8d;
+    --accent: #ad2f4c;
+    --accent-soft: #f8dfe5;
+    --ink: #18212f;
+    --muted: #46576d;
+    --bg: #f5f2ed;
+    --bg-2: #efe8df;
+    --panel: rgba(255,255,255,0.92);
+    --panel-2: #f8f4ee;
+    --line: rgba(30,53,88,0.16);
+    --shadow: rgba(18,26,38,0.14);
+    --serif: "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+    --sans: "Helvetica Neue", "Segoe UI", "Noto Sans", Arial, sans-serif;
   }
+
   @media (prefers-color-scheme: dark) {
     :root {
-      --primary: #9db8de; --accent: #e08aa0; --ink: #e8e6e1; --muted: #9aa3b2;
-      --bg: #14181f; --panel: #1c222c; --panel-2: #232a35; --line: #313a48;
+      --primary: #9bb8d8; --primary-2: #bfd3ed; --accent: #f19dad; --accent-soft: rgba(241,157,173,.16);
+      --ink: #edf1f9; --muted: #a8b3c4; --bg: #101820; --bg-2: #16202b; --panel: rgba(21,28,37,0.86);
+      --panel-2: #1c2632; --line: rgba(255,255,255,0.08); --shadow: rgba(0,0,0,0.32);
     }
   }
+
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font-family: var(--sans); line-height: 1.55;
+    margin: 0;
+    background:
+      radial-gradient(circle at top left, rgba(125,159,198,0.18), transparent 28%),
+      radial-gradient(circle at bottom right, rgba(173,47,76,0.12), transparent 32%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ---------- header ---------- */
   header.hero {
-    background: var(--primary); color: #fff;
-    padding: 54px 24px 44px; text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 50%, #3d5c7d 100%);
+    color: #fff;
+    padding: 62px 24px 54px;
+    text-align: center;
     border-bottom: 5px solid var(--accent);
+    box-shadow: inset 0 -1px 0 rgba(255,255,255,0.1);
+  }
+  header.hero::before,
+  header.hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    pointer-events: none;
+  }
+  header.hero::before {
+    width: 420px; height: 420px; right: -110px; top: -180px;
+  }
+  header.hero::after {
+    width: 280px; height: 280px; left: -90px; bottom: -120px;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 980px;
+    margin: 0 auto;
+    color: #111827;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.17);
+    color: rgba(255,255,255,0.9);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 18px;
   }
   header.hero h1 {
-    font-family: var(--serif); font-weight: 700;
-    font-size: clamp(30px, 5vw, 46px); margin: 0 0 6px;
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(32px, 5vw, 52px);
+    margin: 0 0 10px;
+    letter-spacing: -0.04em;
   }
   header.hero .subtitle {
-    font-family: var(--serif); font-style: italic;
-    font-size: clamp(16px, 2.6vw, 22px); opacity: .92; margin: 0 0 18px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(17px, 2.5vw, 24px);
+    color: rgba(17, 24, 39, 0.86);
+    opacity: 1;
+    margin: 0 0 24px;
+  }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 0 14px;
+  }
+  .meta-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: rgba(255,255,255,0.92);
+    font-size: 12px;
+    font-weight: 600;
   }
   header.hero .instructors {
-    font-size: 15px; opacity: .85;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 14px;
+    opacity: 0.9;
   }
   header.hero .instructors span { white-space: nowrap; }
-  header.hero .instructors span + span::before { content: "  ·  "; opacity: .6; }
+  header.hero .instructors span + span::before { content: "•"; margin-right: 8px; opacity: .8; }
 
-  /* ---------- layout ---------- */
-  main { max-width: 940px; margin: 0 auto; padding: 34px 20px 60px; }
+  main { max-width: 980px; margin: 0 auto; padding: 32px 22px 60px; }
   .lead {
-    font-size: 17px; color: var(--muted);
+    position: relative;
+    font-size: 17px;
+    color: #1a2433;
+    background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,243,238,0.94));
     border-left: 4px solid var(--accent);
-    background: var(--panel-2);
-    padding: 14px 18px; border-radius: 4px; margin: 0 0 30px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin: 0 0 28px;
+    box-shadow: 0 12px 30px var(--shadow);
   }
 
-  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 26px; font-size: 13px; color: var(--muted); }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 24px; }
   .legend .pill { pointer-events: none; }
 
-  /* ---------- chapter cards ---------- */
-  .chapters { display: grid; gap: 16px; }
+  .chapters { display: grid; gap: 18px; }
   .card {
     display: flex; gap: 18px; align-items: flex-start;
-    background: var(--panel); border: 1px solid var(--line);
-    border-radius: 10px; padding: 18px 20px;
-    transition: box-shadow .15s ease, transform .15s ease;
+    background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,243,239,0.96));
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px 20px;
+    box-shadow: 0 10px 24px var(--shadow);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   }
-  .card:hover { box-shadow: 0 6px 20px rgba(31,51,82,.10); transform: translateY(-1px); }
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(30,53,88,0.22);
+    box-shadow: 0 16px 30px rgba(18,25,39,0.12);
+  }
   .num {
-    flex: 0 0 auto; width: 46px; height: 46px; border-radius: 50%;
-    background: var(--primary); color: #fff;
-    font-family: var(--serif); font-size: 20px; font-weight: 700;
-    display: grid; place-items: center;
+    flex: 0 0 auto;
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+    color: #fff;
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 10px 20px rgba(30,53,88,0.2);
   }
   .card .body { flex: 1 1 auto; min-width: 0; }
   .card h2 {
-    font-family: var(--serif); color: var(--accent);
-    font-size: 21px; margin: 2px 0 4px;
+    font-family: var(--serif);
+    color: var(--primary);
+    font-size: clamp(20px, 2vw, 24px);
+    margin: 2px 0 6px;
   }
-  .card .summary { color: var(--muted); font-size: 14.5px; margin: 0 0 12px; }
+  .card .summary {
+    color: #2e3c4f;
+    font-size: 14.5px;
+    line-height: 1.6;
+    margin: 0 0 12px;
+  }
 
   .resources { display: flex; flex-wrap: wrap; gap: 10px; }
   a.pill, span.pill {
-    display: inline-flex; align-items: center; gap: 7px;
-    text-decoration: none; font-size: 13.5px; font-weight: 600;
-    padding: 7px 13px; border-radius: 999px;
-    border: 1px solid var(--line); color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--ink);
     background: var(--panel-2);
-    transition: background .12s ease, border-color .12s ease, color .12s ease;
+    transition: transform .12s ease, background .12s ease, border-color .12s ease, color .12s ease, box-shadow .12s ease;
+  }
+  a.pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(24,33,47,0.1);
   }
   a.pill svg { width: 15px; height: 15px; }
   a.pill.slides:hover   { background: var(--primary); color: #fff; border-color: var(--primary); }
-  a.pill.exercise:hover { background: var(--accent);  color: #fff; border-color: var(--accent); }
-  a.pill.notebook:hover { background: #245a3a; color: #fff; border-color: #245a3a; }
+  a.pill.exercise:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+  a.pill.notebook:hover { background: #2d8c61; color: #fff; border-color: #2d8c61; }
   a.pill svg { flex: 0 0 auto; }
 
-  /* ---------- footer ---------- */
   footer {
-    max-width: 940px; margin: 0 auto; padding: 26px 20px 50px;
-    color: var(--muted); font-size: 13px; border-top: 1px solid var(--line);
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 28px 22px 60px;
+    color: #3f4e63;
+    font-size: 13px;
+    border-top: 1px solid var(--line);
   }
   footer code {
-    background: var(--panel-2); padding: 2px 6px; border-radius: 4px;
-    font-family: "SFMono-Regular", Consolas, monospace; font-size: 12px;
+    background: rgba(30,53,88,0.06);
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 12px;
   }
 
-  /* ---------- error panel ---------- */
   #error {
-    display: none; background: var(--panel-2); border: 1px solid var(--line);
-    border-left: 4px solid var(--accent); border-radius: 6px;
-    padding: 18px 20px; color: var(--ink);
+    display: none;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 12px;
+    padding: 18px 20px;
+    color: var(--ink);
+    box-shadow: 0 12px 24px rgba(18,26,38,0.08);
   }
   #error h3 { margin: 0 0 8px; color: var(--accent); font-family: var(--serif); }
   #error code {
-    display: inline-block; background: var(--primary); color: #fff;
-    padding: 3px 8px; border-radius: 4px; margin-top: 6px;
-    font-family: "SFMono-Regular", Consolas, monospace; font-size: 12.5px;
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-top: 6px;
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 12.5px;
+  }
+
+  @media (max-width: 640px) {
+    .card {
+      flex-direction: column;
+      gap: 12px;
+    }
+    .num {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+    }
+    .lead {
+      font-size: 15px;
+      padding: 16px 18px;
+    }
   }
 </style>
 </head>
 <body>
   <header class="hero">
-    <h1 id="c-title">Introduction to Machine Learning</h1>
-    <p class="subtitle" id="c-subtitle"></p>
-    <div class="instructors" id="c-instructors"></div>
+    <div class="hero-inner">
+      <div class="eyebrow">Course Overview</div>
+      <h1 id="c-title">Introduction to Machine Learning</h1>
+      <p class="subtitle" id="c-subtitle"></p>
+      <div class="hero-meta">
+        <span class="meta-pill">8 modules</span>
+        <span class="meta-pill">Hands-on learning</span>
+        <span class="meta-pill">Practical notebooks</span>
+      </div>
+      <div class="instructors" id="c-instructors"></div>
+    </div>
   </header>
 
   <main>
@@ -153,6 +310,7 @@
   <footer>
     <div id="c-reference"></div>
     <div style="margin-top:6px">Course materials: lecture slides · exercise sets · coding notebooks.</div>
+
   </footer>
 
 <script>
