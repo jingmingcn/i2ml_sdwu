@@ -1,0 +1,239 @@
+/* @theme course */
+/* Academic / lecture theme for "Introduction to Machine Learning".
+   Edit the variables in :root once and every deck updates.
+   Style family: serif headings, two-tone header rule, numbered content
+   slides, tidy footer with course name + slide number. */
+
+@import 'default';
+
+:root {
+  --primary: #1f3352;      /* deep navy — headings, header band */
+  --accent:  #8a1c30;      /* burgundy — rules, emphasis */
+  --ink:     #1c2430;      /* body text */
+  --muted:   #5b6472;      /* secondary text, footer */
+  --bg:      #fbfaf7;      /* warm paper white */
+  --panel:   #f0ece3;      /* callout / code background */
+  --line:    #d8d2c6;      /* hairlines */
+  --serif:   "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --sans:    "Helvetica Neue", "Segoe UI", "Noto Sans", Arial, sans-serif;
+  --mono:    "SFMono-Regular", "JetBrains Mono", Consolas, "Courier New", monospace;
+}
+
+/* ---------- base slide ---------- */
+section {
+  font-family: var(--serif);
+  font-size: 25px;
+  line-height: 1.45;
+  color: var(--ink);
+  background: var(--bg);
+  padding: 58px 68px 64px;
+  /* two-tone top band: thick navy + thin burgundy underline */
+  border-top: 14px solid var(--primary);
+  box-shadow: inset 0 -4px 0 -2px var(--line);
+}
+section::before {
+  /* the second tone of the header rule */
+  content: "";
+  position: absolute;
+  top: 14px; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+}
+
+/* ---------- headings ---------- */
+h1 {
+  font-family: var(--serif);
+  color: var(--primary);
+  font-size: 42px;
+  font-weight: 700;
+  margin: 6px 0 22px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent);
+}
+h2 {
+  font-family: var(--serif);
+  color: var(--accent);
+  font-size: 31px;
+  margin: 4px 0 16px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--line);
+}
+h3 { font-family: var(--sans); color: var(--primary); font-size: 25px; letter-spacing: .2px; }
+
+/* ---------- body elements ---------- */
+p, li { font-size: 25px; }
+ul, ol { margin-left: 4px; }
+li { margin: 6px 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--muted); }
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--line); }
+
+blockquote {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--primary);
+  background: var(--panel);
+  border-left: 5px solid var(--accent);
+  padding: 10px 20px;
+  border-radius: 2px;
+}
+
+/* ---------- code ---------- */
+code {
+  font-family: var(--mono);
+  background: var(--panel);
+  color: #3a2b33;
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 0.82em;
+}
+pre {
+  background: #f5f2ec;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--primary);
+  border-radius: 4px;
+  font-size: 0.68em;
+  line-height: 1.4;
+  padding: 14px 18px;
+}
+pre code { background: none; padding: 0; }
+
+/* ---------- tables ---------- */
+table { font-size: 0.8em; border-collapse: collapse; }
+th {
+  background: var(--primary);
+  color: #fff;
+  font-family: var(--sans);
+  font-weight: 600;
+  text-align: left;
+}
+th, td { border: 1px solid var(--line); padding: 6px 12px; }
+tr:nth-child(even) td { background: #f4f1ea; }
+
+/* ---------- footer & pagination ---------- */
+footer {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+  left: 68px;
+  bottom: 22px;
+}
+section::after { /* page number */
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+  right: 68px;
+  bottom: 22px;
+}
+
+/* ---------- title / section-divider slides ---------- */
+section.lead {
+  justify-content: center;
+  text-align: center;
+  background: var(--bg);
+}
+section.lead h1 {
+  border-bottom: none;
+  color: var(--primary);
+  font-size: 50px;
+  margin-bottom: 8px;
+}
+section.lead h1::before { content: none; }   /* no number on dividers */
+section.lead h2 {
+  color: var(--muted);
+  font-weight: 400;
+  font-style: italic;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  display: inline-block;
+  padding: 10px 26px;
+  margin: 14px 0 22px;
+}
+section.lead h3 { color: var(--accent); font-family: var(--serif); font-style: italic; }
+
+/* ---------- layout helpers (used in the decks) ---------- */
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; }
+.small { font-size: 0.82em; }
+.muted { color: var(--muted); }
+
+/* ---------- layout helpers ---------- */
+
+/* two equal columns */
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 34px;
+  align-items: start;
+}
+
+/* three equal columns */
+.columns-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+/* left wider than right */
+.columns-wide-left {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 34px;
+  align-items: start;
+}
+
+/* right wider than left */
+.columns-wide-right {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 34px;
+  align-items: start;
+}
+
+/* column content blocks */
+.column {
+  min-width: 0;
+}
+
+/* optional panel style */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 14px 18px;
+}
+
+/* keep images inside columns */
+.column img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---------- images ---------- */
+
+img {
+  max-width: 100%;
+}
+
+img.round,
+.round img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* ---------- watermark ---------- */
+
+section:not(.lead) {
+  --wm-width: 600px;
+  background-image:
+    linear-gradient(
+      rgba(251,250,247,0.96),
+      rgba(251,250,247,0.96)
+    ),
+    url("./images/sdu-logo.jpg");
+  background-repeat: no-repeat;
+  background-position: calc(100% + var(--wm-width) / 2) calc(100% + var(--wm-width) / 2);
+  background-size: var(--wm-width) auto;
+}
