@@ -1,18 +1,23 @@
 ---
 marp: true
-theme: course
+size: 16:9
+theme: am_purple
 paginate: true
+# headingDivider: [2,3]
 footer: 'Introduction to Machine Learning · Ch.2 Supervised Learning · L.Z. & M.J.'
 ---
 
-<!-- _class: lead -->
-<!-- _footer: '' -->
+<!-- _class: cover_e -->
+<!-- _header:  ![](../images/logo-1_transparent_.png) --> 
+<!-- _footer: ![](../images/logo_transparent.png) --> 
+<!-- _paginate: "" -->
 
-# Chapter 2
-## Supervised Learning
+# Chapter 2: Supervised Learning
+###### Classification, regression, and the major algorithm families
 
-Classification, regression,
-and the major algorithm families
+Introduction to Machine Learning
+Zhang Li, Jing Ming
+Fall 2026
 
 ---
 
@@ -30,23 +35,15 @@ and the major algorithm families
 
 ## Classification vs. Regression
 
-<div class="cols">
-<div>
-
 ### Classification
 - Predict a **class label** from a fixed list
 - *Binary*: a yes/no question (spam / not spam)
 - *Multiclass*: >2 classes (iris species, language of a web page)
 
-</div>
-<div>
-
 ### Regression
 - Predict a **continuous number** (float)
 - Annual income, crop yield, house price
 
-</div>
-</div>
 
 **Quick test:** is there *continuity* between outcomes? → regression.
 ($39,999 vs $40,001 barely differ; English is not "between" French.)
@@ -123,18 +120,19 @@ Small synthetic sets → *visualize* the ideas; real sets → *test at scale*.
 
 ---
 
-<!-- _class: lead -->
+<!-- _class: trans -->
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
 
-## Part 1
+## Part 1: <br> Classification &  Regression Algorithms
 
-# Classification &
-# Regression Algorithms
 
 ---
 
 ## k-Nearest Neighbors (k-NN)
 
-Build the model = **store the training set**. Predict = look at the *k* closest points and **vote**.
+Build the model = **store the training set**. 
+Predict = look at the *k* closest points and **vote**.
 
 ```python
 from sklearn.neighbors import KNeighborsClassifier
@@ -204,6 +202,10 @@ We need a model that can control complexity.
 
 ---
 
+![bg contains](images/RidgeRegression.jpg)
+
+---
+
 ## Ridge Regression (L2)
 
 Same formula, plus a constraint: keep coefficients **small** (close to 0). This is **regularization**.
@@ -216,6 +218,10 @@ Ridge(alpha=1.0).fit(X_train, y_train)   # Boston: 0.89 / 0.75
 - **`alpha` ↑** → simpler model, smaller coefficients (more regularization)
 - `alpha=10` → 0.79 / 0.64 ; `alpha=0.1` → 0.93 / 0.77
 - With **enough data**, regularization matters less (learning curves)
+
+---
+
+![bg contain](images/lasso.jpg)
 
 ---
 
@@ -274,6 +280,10 @@ Use `penalty="l1"` for a sparse, interpretable model.
 
 ---
 
+![bg contain](images/naive-bayes.jpg)
+
+---
+
 ## Naive Bayes Classifiers
 
 Like linear models but even **faster to train** — learn simple per-class statistics for each feature independently.
@@ -286,6 +296,10 @@ Like linear models but even **faster to train** — learn simple per-class stati
 
 ✔ Blazing fast, great **baselines**, excellent on high-dim **sparse** text
 ✘ Generalization usually a bit **worse** than linear models; `alpha` smooths
+
+---
+
+![bg contain](images/DecisionTrees.jpg)
 
 ---
 
@@ -342,15 +356,17 @@ tree.feature_importances_     # e.g. "worst radius" dominates on cancer
 
 ---
 
-<!-- _class: lead -->
+<!-- _class: trans -->
 
-## Part 2
-
-# Ensembles of Decision Trees
+## Part 2: <br> Ensembles of Decision Trees
 
 ---
 
-## Random Forests
+![bg contain](images/RandomForest.jpg)
+
+---
+
+## Random Forest
 
 Many decision trees, each on a **bootstrap sample** and a random **subset of features** — then average. Averaging cancels individual overfitting.
 
@@ -374,6 +390,10 @@ RandomForestClassifier(n_estimators=100, random_state=0).fit(X_train, y_train)
 ✘ Hard to **interpret** (hundreds of deep trees)
 ✘ Poor on **high-dimensional sparse** data (e.g. text) — use linear models there
 ✘ More **memory** and slower than linear models
+
+---
+
+![bg contain](images/GradientBoosted.jpg)
 
 ---
 
@@ -401,6 +421,24 @@ GradientBoostingClassifier(random_state=0).fit(X_train, y_train)
 - For large problems, consider the **`xgboost`** package
 
 ✘ Like all tree models: weak on high-dimensional sparse data
+
+---
+
+![bg contain](images/Kernel.jpeg)
+
+---
+
+![bg contain](images/RBF.jpeg)
+
+---
+
+![bg contain](images/simple_kernel.jpeg)
+
+---
+
+![bg contain](images/KernelSVM.jpg)
+
+
 
 ---
 
@@ -466,14 +504,14 @@ MLPClassifier(hidden_layer_sizes=[100, 100], alpha=1,
 
 > Strategy: build a network big enough to overfit, then add regularization (`alpha`).
 > For serious deep learning, use `keras` / `tensorflow` / `pytorch` (GPU support).
+>
+> https://playground.tensorflow.org/
 
 ---
 
-<!-- _class: lead -->
+<!-- _class: trans -->
 
-## Part 3
-
-# Uncertainty Estimates
+## Part 3 <br> Uncertainty Estimates
 
 ---
 

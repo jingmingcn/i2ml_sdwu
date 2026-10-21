@@ -38,7 +38,7 @@
       "id": 2,
       "title": "Supervised Learning",
       "summary": "Classification, regression, and the major algorithm families.",
-      "visible": false,
+      "visible": true,
       "resources": {
         "slides":   { "file": "pdf/02-supervised-learning.pdf", "visible": true },
         "exercise": { "file": "pdf/02-supervised-learning-exercise.pdf", "visible": true },
