@@ -9,7 +9,9 @@
   "labels": {
     "slides": "Slides (PDF)",
     "exercise": "Exercises (PDF)",
-    "notebook": "Notebook (.ipynb)"
+    "notebook": "Notebook (.ipynb)",
+    "lab_word": "Lab Report (Word)",
+    "lab_latex": "Lab Report (LaTeX)"
   },
   "chapters": [
     {
@@ -31,7 +33,9 @@
       "resources": {
         "slides":   { "file": "pdf/01-introduction.pdf", "visible": true },
         "exercise": { "file": "pdf/01-introduction-exercise.pdf", "visible": true },
-        "notebook": { "file": "notebooks/01-introduction-code.ipynb", "visible": true }
+        "notebook": { "file": "notebooks/01-introduction-code.ipynb", "visible": true },
+        "lab_word":  { "file": "docx/lab1-introduction.docx", "visible": true },
+        "lab_latex": { "file": "tex/lab1-introduction.tex", "visible": true }
       }
     },
     {
@@ -42,7 +46,9 @@
       "resources": {
         "slides":   { "file": "pdf/02-supervised-learning.pdf", "visible": true },
         "exercise": { "file": "pdf/02-supervised-learning-exercise.pdf", "visible": true },
-        "notebook": { "file": "notebooks/02-supervised-learning-code.ipynb", "visible": true }
+        "notebook": { "file": "notebooks/02-supervised-learning-code.ipynb", "visible": true },
+        "lab_word":  { "file": "docx/lab2-supervised-learning.docx", "visible": true },
+        "lab_latex": { "file": "tex/lab2-supervised-learning.tex", "visible": true }
       }
     },
     {

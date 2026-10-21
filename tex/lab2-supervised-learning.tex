@@ -1,0 +1,439 @@
+%==============================================================================
+%  Lab Report Template — Lab 2: Supervised Learning
+%  Course : Introduction to Machine Learning (with Python & scikit-learn)
+%  Follows: notebooks/02-supervised-learning-code.ipynb
+%           "Comparing Classifiers on the Breast Cancer Dataset"
+%
+%  Compile: pdflatex lab2-supervised-learning.tex   (run twice for references)
+%       or: latexmk -pdf lab2-supervised-learning.tex
+%
+%  HOW TO USE
+%  ----------
+%  1. Fill in the metadata in the "STUDENT INFORMATION" block below.
+%  2. Run the notebook, then replace every  % TODO  / \textit{TODO} with the
+%     numbers and plots you obtained.
+%  3. Put your figures in a  figures/  subfolder and use \includegraphics.
+%  4. Delete the guidance comments (lines starting with %) before submitting.
+%==============================================================================
+\documentclass[11pt,a4paper]{article}
+
+%------------------------------ packages --------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+%------------------------------ metadata --------------------------------------
+% ========================= STUDENT INFORMATION ===============================
+\newcommand{\Course}{Introduction to Machine Learning}
+\newcommand{\LabNo}{Lab 2}
+\newcommand{\LabTitle}{Supervised Learning}
+\newcommand{\StudentName}{Your Name}          % TODO: your full name
+\newcommand{\StudentID}{Student ID}           % TODO: your student number
+\newcommand{\DueDate}{2026.10.21}                 % TODO: the due date
+\newcommand{\Instructor}{Zhang Li \& Jing Ming}
+\newcommand{\Institution}{Shandong Women's University}
+% =============================================================================
+
+%------------------------------ colours & code style --------------------------
+\definecolor{codebg}{RGB}{245,242,247}
+\definecolor{kw}{RGB}{125,15,98}      % keywords (burgundy)
+\definecolor{str}{RGB}{31,51,82}      % strings (navy)
+\definecolor{cmt}{RGB}{91,100,114}    % comments (muted)
+\definecolor{accent}{RGB}{138,28,48}  % headings accent
+
+\lstdefinestyle{py}{
+  language=Python,
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{kw}\bfseries,
+  stringstyle=\color{str},
+  commentstyle=\color{cmt}\itshape,
+  numberstyle=\tiny\color{cmt},
+  numbers=left,
+  numbersep=8pt,
+  frame=leftline,
+  framerule=1.2pt,
+  rulecolor=\color{accent},
+  showstringspaces=false,
+  breaklines=true,
+  tabsize=4,
+  xleftmargin=14pt,
+  aboveskip=10pt,
+  belowskip=6pt,
+}
+\lstset{style=py}
+
+%------------------------------ headers/footers -------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small \Course}
+\rhead{\small \LabNo\ — \LabTitle}
+\cfoot{\small \StudentName\ (\StudentID)}
+\rfoot{\small \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+%------------------------------ helpers ---------------------------------------
+% A grey placeholder box to stand in for a figure you have not added yet.
+\newcommand{\placeholder}[2][8cm]{%
+  \fbox{\parbox[c][5cm][c]{#1}{\centering\color{cmt}\itshape #2}}%
+}
+
+%==============================================================================
+\begin{document}
+
+%------------------------------ title block -----------------------------------
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+{\LARGE\bfseries \Course\par}
+\vspace{0.6cm}
+{\color{accent}\rule{\linewidth}{1.5pt}}\par
+\vspace{0.5cm}
+{\Huge\bfseries \LabNo: \LabTitle\par}
+\vspace{0.3cm}
+{\large Comparing Classifiers on the Breast Cancer Dataset\par}
+\vspace{0.4cm}
+{\color{accent}\rule{\linewidth}{1.5pt}}\par
+\vspace{2.3cm}
+
+\begin{tabular}{rl}
+  \textbf{Student:}    & \StudentName \\[4pt]
+  \textbf{Student ID:} & \StudentID \\[4pt]
+  \textbf{Instructor:} & \Instructor \\[4pt]
+  \textbf{Institution:}& \Institution \\[4pt]
+  \textbf{Date:}       & \DueDate \\
+\end{tabular}
+
+\vfill
+{\color{cmt}\small Based on \texttt{notebooks/02-supervised-learning-code.ipynb}.
+Replace all placeholder text before submission.}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+%==============================================================================
+\section{Objectives}
+%------------------------------------------------------------------------------
+In this lab you compare several supervised classifiers on the same dataset.
+By the end you should be able to:
+\begin{itemize}[leftmargin=*]
+  \item Train several classifiers and compare \textbf{train vs.\ test} accuracy.
+  \item Observe \textbf{overfitting} in an unrestricted decision tree.
+  \item Read \textbf{feature importances} from a random forest.
+  \item Explain why \textbf{SVMs need feature scaling}.
+  \item Obtain class \textbf{probability estimates} with \lstinline|predict_proba|.
+\end{itemize}
+
+%==============================================================================
+\section{Background}
+%------------------------------------------------------------------------------
+In \emph{supervised learning} a model is trained on labelled examples
+$(\mathbf{x}_i, y_i)$ and learns a mapping $f:\mathbf{x}\mapsto y$ that should
+\textbf{generalise} to unseen data. Here $y\in\{0,1\}$ (malignant / benign), so
+this is a \textbf{binary classification} task. We report accuracy on a held-out
+test set,
+\[
+  \text{accuracy} = \frac{\text{\# correct predictions}}{\text{\# samples}},
+\]
+and compare it to the training accuracy to detect over-/under-fitting:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Overfitting} — high training accuracy but a noticeably lower test
+        accuracy (the model memorised training quirks).
+  \item \textbf{Underfitting} — low accuracy on both sets (the model is too simple).
+\end{itemize}
+
+\noindent This lab touches five model families: \textbf{logistic regression},
+\textbf{decision trees}, \textbf{random forests}, \textbf{support vector machines
+(SVM)}, and uses \textbf{feature scaling} (\lstinline|StandardScaler|) and
+\textbf{probability estimates} (\lstinline|predict_proba|).
+
+%==============================================================================
+\section{Dataset}
+%------------------------------------------------------------------------------
+We use the \textbf{Breast Cancer Wisconsin} dataset, bundled with scikit-learn
+as \lstinline|load_breast_cancer()|. Each sample describes a tumour with 30
+numeric features; the target labels it \emph{malignant} or \emph{benign}.
+
+\begin{table}[H]
+\centering
+\caption{Dataset summary (fixed facts, provided for reference).}
+\label{tab:dataset}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Property} & \textbf{Value} \\
+\midrule
+Source              & \lstinline|sklearn.datasets.load_breast_cancer| \\
+Task type           & Binary classification \\
+Number of samples   & 569 \\
+Number of features  & 30 (numeric) \\
+Classes             & malignant (0), benign (1) \\
+Split               & \lstinline|train_test_split(..., random_state=0)| \\
+Training samples    & 426 \\
+Test samples        & 143 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%==============================================================================
+\section{Methodology}
+%------------------------------------------------------------------------------
+The notebook is organised as six exercises. All models come from scikit-learn
+and share the same train/test split (\lstinline|random_state=0|). The setup:
+
+\begin{lstlisting}[caption={Imports and data split (Exercise 1).},label={lst:setup}]
+import numpy as np
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+
+cancer = load_breast_cancer()
+X_train, X_test, y_train, y_test = train_test_split(
+    cancer.data, cancer.target, random_state=0)   # -> 426 train / 143 test
+\end{lstlisting}
+
+\noindent The six exercises are:
+\begin{enumerate}[leftmargin=*]
+  \item Load the data and create the train/test split.
+  \item Train \lstinline|LogisticRegression(max_iter=5000)|; report train/test accuracy.
+  \item Train a \lstinline|DecisionTreeClassifier| with no depth limit and with
+        \lstinline|max_depth=4|; compare train vs.\ test to see overfitting.
+  \item Train \lstinline|RandomForestClassifier(n_estimators=100, random_state=0)|;
+        report test accuracy and the 5 most important features.
+  \item Train \lstinline|SVC()| on raw vs.\ \lstinline|StandardScaler|-scaled data.
+  \item Print \lstinline|predict_proba| for the first 5 test samples.
+\end{enumerate}
+
+%==============================================================================
+\section{Experiments and Results}
+%------------------------------------------------------------------------------
+% Run the notebook and fill in every \textit{TODO} with the value you obtained.
+
+\subsection{Exercise 1 — Data split}
+Report the sizes produced by the split.
+\begin{itemize}[leftmargin=*]
+  \item Training samples: \textit{TODO} \quad(expected 426)
+  \item Test samples: \textit{TODO} \quad(expected 143)
+\end{itemize}
+
+\subsection{Exercise 2 — Logistic regression}
+\begin{table}[H]
+\centering
+\caption{Logistic regression accuracy.}
+\label{tab:logreg}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Model} & \textbf{Train acc.} & \textbf{Test acc.} \\
+\midrule
+\lstinline|LogisticRegression(max_iter=5000)| & \textit{TODO} & \textit{TODO} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Exercise 3 — Decision tree and overfitting}
+Compare an unrestricted tree with a depth-limited one.
+\begin{table}[H]
+\centering
+\caption{Decision tree: effect of \texttt{max\_depth} on over-fitting.}
+\label{tab:tree}
+\begin{tabular}{@{}lccl@{}}
+\toprule
+\textbf{Model} & \textbf{Train acc.} & \textbf{Test acc.} & \textbf{Comment} \\
+\midrule
+\lstinline|DecisionTree(random_state=0)|          & \textit{TODO} & \textit{TODO} & overfits? \\
+\lstinline|DecisionTree(max_depth=4)|             & \textit{TODO} & \textit{TODO} & \\
+\bottomrule
+\end{tabular}
+\end{table}
+% Optional extension: plot train/test accuracy against max_depth = 1..10.
+\begin{figure}[H]
+\centering
+% \includegraphics[width=0.7\linewidth]{figures/tree_depth_curve.png}
+\placeholder[10cm]{(Optional) Plot of train/test accuracy\\ vs.\ \texttt{max\_depth} = 1..10.}
+\caption{Train/test accuracy as the tree depth increases (optional extension).}
+\label{fig:depth}
+\end{figure}
+
+\subsection{Exercise 4 — Random forest and feature importances}
+Report the random-forest test accuracy and list the five most important features.
+\begin{table}[H]
+\centering
+\caption{Top-5 features by random-forest importance.}
+\label{tab:importance}
+\begin{tabular}{@{}clr@{}}
+\toprule
+\textbf{Rank} & \textbf{Feature name} & \textbf{Importance} \\
+\midrule
+1 & \textit{TODO} & \textit{TODO} \\
+2 & \textit{TODO} & \textit{TODO} \\
+3 & \textit{TODO} & \textit{TODO} \\
+4 & \textit{TODO} & \textit{TODO} \\
+5 & \textit{TODO} & \textit{TODO} \\
+\bottomrule
+\end{tabular}
+\end{table}
+\noindent Random-forest test accuracy: \textit{TODO} \quad(expected $>0.90$).
+
+\begin{figure}[H]
+\centering
+% \includegraphics[width=0.75\linewidth]{figures/feature_importances.png}
+\placeholder[11cm]{(Optional) Bar chart of \texttt{rf.feature\_importances\_}.}
+\caption{Random-forest feature importances (optional).}
+\label{fig:importance}
+\end{figure}
+
+\subsection{Exercise 5 — Scaling matters for SVMs}
+Compare the SVM on raw features versus \lstinline|StandardScaler|-scaled features.
+\begin{table}[H]
+\centering
+\caption{SVM test accuracy with and without feature scaling.}
+\label{tab:svm}
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Preprocessing} & \textbf{Test acc.} \\
+\midrule
+\lstinline|SVC()| on raw data          & \textit{TODO} \\
+\lstinline|SVC()| on scaled data       & \textit{TODO} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Exercise 6 — Probability estimates}
+Report \lstinline|predict_proba| for the first five test samples.
+\begin{table}[H]
+\centering
+\caption{Predicted class probabilities for the first 5 test samples.}
+\label{tab:proba}
+\begin{tabular}{@{}cccl@{}}
+\toprule
+\textbf{Sample} & \textbf{P(malignant)} & \textbf{P(benign)} & \textbf{Predicted} \\
+\midrule
+1 & \textit{TODO} & \textit{TODO} & \textit{TODO} \\
+2 & \textit{TODO} & \textit{TODO} & \textit{TODO} \\
+3 & \textit{TODO} & \textit{TODO} & \textit{TODO} \\
+4 & \textit{TODO} & \textit{TODO} & \textit{TODO} \\
+5 & \textit{TODO} & \textit{TODO} & \textit{TODO} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%==============================================================================
+\section{Discussion}
+%------------------------------------------------------------------------------
+Answer with evidence from your tables and figures above:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Overfitting (Ex.~3).} How large is the gap between train and test
+        accuracy for the unrestricted tree? Does \lstinline|max_depth=4| reduce it?
+  \item \textbf{Best model.} Which classifier generalised best on the test set, and
+        why do you think so?
+  \item \textbf{Scaling (Ex.~5).} How much did \lstinline|StandardScaler| change the
+        SVM's test accuracy? Why are SVMs sensitive to feature scales while trees
+        and forests are not?
+  \item \textbf{Feature importances (Ex.~4).} Do the top features in
+        Table~\ref{tab:importance} make intuitive sense for tumour diagnosis?
+  \item \textbf{Probabilities (Ex.~6).} Are any of the five samples predicted with
+        low confidence? How could a probability threshold be useful in a medical
+        setting?
+\end{itemize}
+% TODO: write 1--2 paragraphs answering the questions above.
+
+%==============================================================================
+\section{Conclusion}
+%------------------------------------------------------------------------------
+% 3--5 sentences summarising what you learned and the main result.
+% TODO.
+
+%==============================================================================
+% \begin{thebibliography}{9}
+% \bibitem{mueller2016}
+% A.~C. M\"uller and S.~Guido,
+% \emph{Introduction to Machine Learning with Python}.
+% O'Reilly Media, 2016.
+
+% \bibitem{sklearn}
+% F.~Pedregosa et al.,
+% ``Scikit-learn: Machine Learning in Python,''
+% \emph{Journal of Machine Learning Research}, vol.~12, pp.~2825--2830, 2011.
+% \end{thebibliography}
+
+%==============================================================================
+\appendix
+\section{Source Code}
+%------------------------------------------------------------------------------
+% Paste your completed code, or reference the notebook you ran.
+Full code: \texttt{notebooks/02-supervised-learning-code.ipynb}. Key solution:
+
+\begin{lstlisting}[caption={Reference solution for Exercises 2--6.}]
+# Ex2 - logistic regression
+logreg = LogisticRegression(max_iter=5000).fit(X_train, y_train)
+print("logreg train/test:", logreg.score(X_train, y_train),
+      logreg.score(X_test, y_test))
+
+# Ex3 - decision tree (overfitting)
+full   = DecisionTreeClassifier(random_state=0).fit(X_train, y_train)
+pruned = DecisionTreeClassifier(max_depth=4, random_state=0).fit(X_train, y_train)
+
+#Optional: Train/test accuracy as the tree depth increases (optional extension).  Plot of train/test accuracy vs. max_depth = 1..10
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(8, 5))
+train_acc = []
+test_acc = []
+for depth in range(1, 11):
+    tree = DecisionTreeClassifier(max_depth=depth, random_state=0).fit(X_train, y_train)
+    train_acc.append(tree.score(X_train, y_train))
+    test_acc.append(tree.score(X_test, y_test))
+plt.plot(range(1, 11), train_acc, label='Train Accuracy', marker='o')
+plt.plot(range(1, 11), test_acc, label='Test Accuracy', marker='o')
+plt.xlabel('Max Depth')
+plt.ylabel('Accuracy')
+plt.title('Decision Tree Accuracy vs Max Depth')
+plt.xticks(range(1, 11))
+plt.legend()
+plt.grid()
+plt.show()
+
+# Ex4 - random forest + feature importances
+rf = RandomForestClassifier(n_estimators=100, random_state=0).fit(X_train, y_train)
+top = np.argsort(rf.feature_importances_)[::-1][:5]
+print(rf.score(X_test, y_test), list(cancer.feature_names[top]))
+
+# Optional. Random-forest feature importances (optional).  Bar chart of rf.feature_importances_
+
+plt.figure(figsize=(10, 6))
+importances = rf.feature_importances_
+indices = np.argsort(importances)[::-1]
+plt.title('Feature Importances from Random Forest')
+plt.bar(range(X_train.shape[1]), importances[indices], align='center')
+plt.xticks(range(X_train.shape[1]), cancer.feature_names[indices], rotation=90)
+plt.tight_layout()
+plt.show()
+
+# Ex5 - scaling matters for SVM
+scaler = StandardScaler().fit(X_train)
+svc_raw    = SVC().fit(X_train, y_train)
+svc_scaled = SVC().fit(scaler.transform(X_train), y_train)
+
+# Ex6 - probability estimates
+print(np.round(rf.predict_proba(X_test[:5]), 3))
+\end{lstlisting}
+
+\end{document}

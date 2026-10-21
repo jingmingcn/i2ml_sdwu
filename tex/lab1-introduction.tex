@@ -1,0 +1,356 @@
+%==============================================================================
+%  Lab Report Template — Lab 1: Introduction
+%  Course : Introduction to Machine Learning (with Python & scikit-learn)
+%  Follows: notebooks/01-introduction-code.ipynb
+%           "Classifying Iris Species with k-Nearest Neighbors"
+%
+%  Compile: pdflatex lab1-introduction.tex   (run twice for references)
+%       or: latexmk -pdf lab1-introduction.tex
+%
+%  HOW TO USE
+%  ----------
+%  1. Fill in the metadata in the "STUDENT INFORMATION" block below.
+%  2. Run the notebook, then replace every  % TODO  / \textit{TODO} with the
+%     values and plots you obtained.
+%  3. Put your figures in a  figures/  subfolder and use \includegraphics.
+%  4. Delete the guidance comments (lines starting with %) before submitting.
+%==============================================================================
+\documentclass[11pt,a4paper]{article}
+
+%------------------------------ packages --------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+%------------------------------ metadata --------------------------------------
+% ========================= STUDENT INFORMATION ===============================
+\newcommand{\Course}{Introduction to Machine Learning}
+\newcommand{\LabNo}{Lab 1}
+\newcommand{\LabTitle}{Introduction}
+\newcommand{\StudentName}{Your Name}          % TODO: your full name
+\newcommand{\StudentID}{Student ID}           % TODO: your student number
+\newcommand{\DueDate}{2026.09.23}                 % TODO: the due date
+\newcommand{\Instructor}{Zhang Li \& Jing Ming}
+\newcommand{\Institution}{Shandong Women's University}
+% =============================================================================
+
+%------------------------------ colours & code style --------------------------
+\definecolor{codebg}{RGB}{245,242,247}
+\definecolor{kw}{RGB}{125,15,98}      % keywords (burgundy)
+\definecolor{str}{RGB}{31,51,82}      % strings (navy)
+\definecolor{cmt}{RGB}{91,100,114}    % comments (muted)
+\definecolor{accent}{RGB}{138,28,48}  % headings accent
+
+\lstdefinestyle{py}{
+  language=Python,
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{kw}\bfseries,
+  stringstyle=\color{str},
+  commentstyle=\color{cmt}\itshape,
+  numberstyle=\tiny\color{cmt},
+  numbers=left,
+  numbersep=8pt,
+  frame=leftline,
+  framerule=1.2pt,
+  rulecolor=\color{accent},
+  showstringspaces=false,
+  breaklines=true,
+  tabsize=4,
+  xleftmargin=14pt,
+  aboveskip=10pt,
+  belowskip=6pt,
+}
+\lstset{style=py}
+
+%------------------------------ headers/footers -------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small \Course}
+\rhead{\small \LabNo\ — \LabTitle}
+\cfoot{\small \StudentName\ (\StudentID)}
+\rfoot{\small \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+%------------------------------ helpers ---------------------------------------
+% A grey placeholder box to stand in for a figure you have not added yet.
+\newcommand{\placeholder}[2][8cm]{%
+  \fbox{\parbox[c][5cm][c]{#1}{\centering\color{cmt}\itshape #2}}%
+}
+
+%==============================================================================
+\begin{document}
+
+%------------------------------ title block -----------------------------------
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+{\LARGE\bfseries \Course\par}
+\vspace{0.6cm}
+{\color{accent}\rule{\linewidth}{1.5pt}}\par
+\vspace{0.5cm}
+{\Huge\bfseries \LabNo: \LabTitle\par}
+\vspace{0.3cm}
+{\large Classifying Iris Species with k-Nearest Neighbors\par}
+\vspace{0.4cm}
+{\color{accent}\rule{\linewidth}{1.5pt}}\par
+\vspace{2.3cm}
+
+\begin{tabular}{rl}
+  \textbf{Student:}    & \StudentName \\[4pt]
+  \textbf{Student ID:} & \StudentID \\[4pt]
+  \textbf{Instructor:} & \Instructor \\[4pt]
+  \textbf{Institution:}& \Institution \\[4pt]
+  \textbf{Date:}       & \DueDate \\
+\end{tabular}
+
+\vfill
+{\color{cmt}\small Based on \texttt{notebooks/01-introduction-code.ipynb}.
+Replace all placeholder text before submission.}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+%==============================================================================
+\section{Objectives}
+%------------------------------------------------------------------------------
+In this first lab you rebuild the book's very first machine learning
+application step by step. By the end you should be able to:
+\begin{itemize}[leftmargin=*]
+  \item Load a built-in scikit-learn dataset and inspect it.
+  \item Split data into \textbf{training} and \textbf{test} sets.
+  \item Build a \textbf{k-Nearest Neighbors} classifier.
+  \item Use the \lstinline|fit| $\rightarrow$ \lstinline|predict| $\rightarrow$
+        \lstinline|score| workflow to train, predict, and evaluate a model.
+\end{itemize}
+
+%==============================================================================
+\section{Background}
+%------------------------------------------------------------------------------
+In \emph{supervised learning} a model learns from labelled examples
+$(\mathbf{x}_i, y_i)$. Because each iris belongs to one of three species, this
+is a \textbf{multiclass classification} problem (the possible answers are
+\emph{classes}; the answer for one flower is its \emph{label}).
+
+To estimate how well a model \textbf{generalises} to unseen data, we hold out a
+\textbf{test set}: the model is trained only on the training set and evaluated on
+the test set. Accuracy summarises performance:
+\[
+  \text{accuracy} = \frac{\text{\# correct predictions}}{\text{\# samples}}.
+\]
+
+\noindent\textbf{k-Nearest Neighbors (k-NN).} To classify a new point, k-NN looks
+at the $k$ closest training points and takes a majority vote. With
+\lstinline|n_neighbors=1| the prediction is simply the label of the single
+nearest training point. Every scikit-learn model follows the same pattern:
+\lstinline|fit| (train), \lstinline|predict| (classify new data),
+\lstinline|score| (accuracy).
+
+%==============================================================================
+\section{Dataset}
+%------------------------------------------------------------------------------
+We use the classic \textbf{Iris} dataset, bundled with scikit-learn as
+\lstinline|load_iris()|. Each flower is described by four measurements, and the
+target is one of three species.
+
+\begin{table}[H]
+\centering
+\caption{Dataset summary (fixed facts, provided for reference).}
+\label{tab:dataset}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Property} & \textbf{Value} \\
+\midrule
+Source              & \lstinline|sklearn.datasets.load_iris| \\
+Task type           & Multiclass classification (3 classes) \\
+Number of samples   & 150 \\
+Number of features  & 4 (sepal/petal length \& width, cm) \\
+Classes             & setosa, versicolor, virginica (50 each) \\
+Split               & \lstinline|train_test_split(..., random_state=0)| \\
+Training samples    & 112 \\
+Test samples        & 38 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Optional: include the pair plot ("look at your data") if you made one.
+\begin{figure}[H]
+\centering
+% \includegraphics[width=0.75\linewidth]{figures/iris_pairplot.png}
+\placeholder[11cm]{(Optional) Pair plot of the four features,\\ coloured by species.}
+\caption{Scatter-matrix of the Iris features (optional ``look at your data'' step).}
+\label{fig:pairplot}
+\end{figure}
+
+%==============================================================================
+\section{Methodology}
+%------------------------------------------------------------------------------
+The notebook is organised as seven short exercises built on this setup:
+
+\begin{lstlisting}[caption={Imports (Setup).},label={lst:setup}]
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+\end{lstlisting}
+
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Load the data} into \lstinline|iris| with \lstinline|load_iris()|.
+  \item \textbf{Explore} the shape and the per-class counts.
+  \item \textbf{Split} into train/test with \lstinline|random_state=0|.
+  \item \textbf{Build \& train} \lstinline|KNeighborsClassifier(n_neighbors=1)|.
+  \item \textbf{Predict} the species of a new flower \lstinline|[5.0, 2.9, 1.0, 0.2]|.
+  \item \textbf{Evaluate} accuracy on the test set with \lstinline|score|.
+  \item \textbf{(Bonus)} Vary $k$ from 1 to 10 and compare test accuracy.
+\end{enumerate}
+
+%==============================================================================
+\section{Experiments and Results}
+%------------------------------------------------------------------------------
+% Run the notebook and fill in every \textit{TODO} with what you obtained.
+
+\subsection{Exercise 1 — Load the data}
+Report what the dataset contains.
+\begin{itemize}[leftmargin=*]
+  \item Feature names: \textit{TODO}
+  \item Target names: \textit{TODO} \quad(expected setosa, versicolor, virginica)
+  \item Data shape: \textit{TODO} \quad(expected $(150, 4)$)
+\end{itemize}
+
+\subsection{Exercise 2 — Explore the data}
+\begin{itemize}[leftmargin=*]
+  \item Samples, features: \textit{TODO}
+  \item Per-class counts: \textit{TODO} \quad(expected 50 / 50 / 50)
+\end{itemize}
+
+\subsection{Exercise 3 — Train/test split}
+\begin{itemize}[leftmargin=*]
+  \item \lstinline|X_train| shape: \textit{TODO} \quad(expected 112 samples)
+  \item \lstinline|X_test| shape: \textit{TODO} \quad(expected 38 samples)
+\end{itemize}
+
+\subsection{Exercise 4 — Build and train the classifier}
+State the model you trained and confirm it fitted successfully.
+\begin{itemize}[leftmargin=*]
+  \item Model: \lstinline|KNeighborsClassifier(n_neighbors=1)|
+  \item Fitted on: \textit{TODO} training samples
+\end{itemize}
+
+\subsection{Exercise 5 — Predict a new flower}
+For the new measurements \lstinline|[5.0, 2.9, 1.0, 0.2]|:
+\begin{itemize}[leftmargin=*]
+  \item Predicted class index: \textit{TODO}
+  \item Predicted species name: \textit{TODO} \quad(expected \emph{setosa})
+\end{itemize}
+
+\subsection{Exercise 6 — Evaluate on the test set}
+\begin{itemize}[leftmargin=*]
+  \item Test accuracy: \textit{TODO} \quad(expected $\approx 0.97$, must be $> 0.90$)
+\end{itemize}
+
+\subsection{Exercise 7 (bonus) — Does \texorpdfstring{$k$}{k} matter?}
+Record the test accuracy for each number of neighbours.
+\begin{table}[H]
+\centering
+\caption{Test accuracy as the number of neighbours $k$ varies.}
+\label{tab:kvalues}
+\begin{tabular}{@{}cccccccccc@{}}
+\toprule
+$k$ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9/10 \\
+\midrule
+Test acc. & \textit{TODO} & \textit{TODO} & \textit{TODO} & \textit{TODO}
+          & \textit{TODO} & \textit{TODO} & \textit{TODO} & \textit{TODO} & \textit{TODO} \\
+\bottomrule
+\end{tabular}
+\end{table}
+% Optional: plot the table above.
+\begin{figure}[H]
+\centering
+% \includegraphics[width=0.7\linewidth]{figures/k_vs_accuracy.png}
+\placeholder[10cm]{(Optional) Plot of test accuracy vs.\ $k$.}
+\caption{Test accuracy as a function of the number of neighbours (optional).}
+\label{fig:kplot}
+\end{figure}
+
+%==============================================================================
+\section{Discussion}
+%------------------------------------------------------------------------------
+Answer with evidence from your results above:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Generalisation.} Why do we evaluate on a separate test set instead
+        of on the training data?
+  \item \textbf{Prediction (Ex.~5).} Does the predicted species for the new flower
+        seem reasonable given its small petals?
+  \item \textbf{Choice of $k$ (Ex.~7).} Which value(s) of $k$ gave the best test
+        accuracy? How does $k$ relate to model complexity (small $k$ vs.\ large $k$)?
+  \item \textbf{Limitations.} What are the drawbacks of k-NN noted in the course
+        (speed, many features, scaling)?
+\end{itemize}
+% TODO: write 1--2 paragraphs answering the questions above.
+
+%==============================================================================
+\section{Conclusion}
+%------------------------------------------------------------------------------
+% 3--5 sentences summarising what you learned and your main result.
+% TODO.
+
+%==============================================================================
+\begin{thebibliography}{9}
+\bibitem{mueller2016}
+A.~C. M\"uller and S.~Guido,
+\emph{Introduction to Machine Learning with Python}.
+O'Reilly Media, 2016.
+
+\bibitem{sklearn}
+F.~Pedregosa et al.,
+``Scikit-learn: Machine Learning in Python,''
+\emph{Journal of Machine Learning Research}, vol.~12, pp.~2825--2830, 2011.
+\end{thebibliography}
+
+%==============================================================================
+\appendix
+\section{Source Code}
+%------------------------------------------------------------------------------
+% Paste your completed code, or reference the notebook you ran.
+Full code: \texttt{notebooks/01-introduction-code.ipynb}. Reference solution:
+
+\begin{lstlisting}[caption={End-to-end reference solution.}]
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+
+iris = load_iris()                                        # Ex1
+print(iris.data.shape, np.bincount(iris.target))          # Ex2
+
+X_train, X_test, y_train, y_test = train_test_split(      # Ex3
+    iris.data, iris.target, random_state=0)
+
+knn = KNeighborsClassifier(n_neighbors=1)                 # Ex4
+knn.fit(X_train, y_train)
+
+X_new = np.array([[5.0, 2.9, 1.0, 0.2]])                  # Ex5
+print(iris.target_names[knn.predict(X_new)][0])           # -> setosa
+
+print(round(knn.score(X_test, y_test), 3))                # Ex6  (~0.974)
+
+for k in range(1, 11):                                    # Ex7
+    m = KNeighborsClassifier(n_neighbors=k).fit(X_train, y_train)
+    print(k, round(m.score(X_test, y_test), 3))
+\end{lstlisting}
+
+\end{document}
