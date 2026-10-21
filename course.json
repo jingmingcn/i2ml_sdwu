@@ -7,6 +7,7 @@
     "instructors": ["Zhang Li (张丽)", "Jing Ming (井明)"]
   },
   "labels": {
+    "assignment": "Assignment",
     "slides": "Slides (PDF)",
     "exercise": "Exercises (PDF)",
     "notebook": "Notebook (.ipynb)",
@@ -31,6 +32,7 @@
       "summary": "ML concepts, the Python stack, and your first classifier.",
       "visible": true,
       "resources": {
+        "assignment": { "file": "assignments/lab1-introduction-assignment.md", "visible": true },
         "slides":   { "file": "pdf/01-introduction.pdf", "visible": true },
         "exercise": { "file": "pdf/01-introduction-exercise.pdf", "visible": true },
         "notebook": { "file": "notebooks/01-introduction-code.ipynb", "visible": true },
@@ -44,6 +46,7 @@
       "summary": "Classification, regression, and the major algorithm families.",
       "visible": true,
       "resources": {
+        "assignment": { "file": "assignments/lab2-supervised-learning-assignment.md", "visible": true },
         "slides":   { "file": "pdf/02-supervised-learning.pdf", "visible": true },
         "exercise": { "file": "pdf/02-supervised-learning-exercise.pdf", "visible": true },
         "notebook": { "file": "notebooks/02-supervised-learning-code.ipynb", "visible": true },

@@ -214,6 +214,7 @@
     box-shadow: 0 8px 16px rgba(24,33,47,0.1);
   }
   a.pill svg { width: 15px; height: 15px; }
+  a.pill.assignment:hover { background: #c2622d; color: #fff; border-color: #c2622d; }
   a.pill.slides:hover   { background: var(--primary); color: #fff; border-color: var(--primary); }
   a.pill.exercise:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
   a.pill.notebook:hover { background: #2d8c61; color: #fff; border-color: #2d8c61; }
@@ -294,6 +295,7 @@
     <p class="lead" id="c-desc"></p>
 
     <div class="legend">
+      <span class="pill assignment">📋 Assignment</span>
       <span class="pill slides">📊 Slides</span>
       <span class="pill exercise">📝 Exercises</span>
       <span class="pill notebook">💻 Notebook</span>
@@ -318,13 +320,14 @@
 
 <script>
 const ICONS = {
+  assignment: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6a1 1 0 0 1 1 1v1h1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>',
   slides:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1"/><line x1="12" y1="16" x2="12" y2="20"/><line x1="8" y1="20" x2="16" y2="20"/></svg>',
   exercise: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
   notebook: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
   lab_word:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>',
   lab_latex: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>'
 };
-const ICON_TEXT = { slides: "📊", exercise: "📝", notebook: "💻", lab_word: "📄", lab_latex: "📄" };
+const ICON_TEXT = { assignment: "📋", slides: "📊", exercise: "📝", notebook: "💻", lab_word: "📄", lab_latex: "📄" };
 const DOWNLOAD_KINDS = ["notebook", "lab_word", "lab_latex"];
 
 function el(tag, cls, html) {
@@ -362,7 +365,7 @@ function render(cfg) {
       if (ch.summary) body.appendChild(el("p", "summary", ch.summary));
 
       const res = el("div", "resources");
-      ["slides", "exercise", "notebook", "lab_word", "lab_latex"].forEach(kind => {
+      ["assignment", "slides", "exercise", "notebook", "lab_word", "lab_latex"].forEach(kind => {
         const r = (ch.resources || {})[kind];
         if (!r || r.visible === false || !r.file) return;
         const a = el("a", "pill " + kind,
