@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="360" height="240" viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
+  <text x="180" y="18" fill="#551645" font-size="13" text-anchor="middle">face ≈ weighted sum of eigenfaces</text>
+  <rect x="20" y="40" width="60" height="70" fill="#e4d2e0" stroke="#954c81"/>
+  <circle cx="50" cy="70" r="18" fill="#af79a1"/><circle cx="43" cy="66" r="3" fill="#211112"/><circle cx="57" cy="66" r="3" fill="#211112"/>
+  <text x="95" y="80" fill="#551645" font-size="20">=</text>
+  <rect x="115" y="40" width="55" height="70" fill="#551645" opacity="0.8"/>
+  <text x="178" y="80" fill="#551645" font-size="16">+</text>
+  <rect x="195" y="40" width="55" height="70" fill="#954c81" opacity="0.7"/>
+  <text x="258" y="80" fill="#551645" font-size="16">+</text>
+  <rect x="275" y="40" width="55" height="70" fill="#af79a1" opacity="0.7"/>
+  <text x="50" y="128" fill="#8c8c8c" font-size="11" text-anchor="middle">a face</text>
+  <text x="222" y="128" fill="#8c8c8c" font-size="11" text-anchor="middle">eigenfaces (components)</text>
+  <text x="180" y="175" fill="#211112" font-size="12" text-anchor="middle">components capture contrast,</text>
+  <text x="180" y="193" fill="#211112" font-size="12" text-anchor="middle">lighting, and face alignment</text>
+</svg>

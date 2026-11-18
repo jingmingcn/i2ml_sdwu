@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="980" height="300" viewBox="0 0 980 300" xmlns="http://www.w3.org/2000/svg">
+  <rect x="380" y="20" width="220" height="56" rx="10" fill="#551645"/>
+  <text x="490" y="54" fill="#fff" font-size="22" text-anchor="middle" font-weight="bold">Unsupervised Learning</text>
+  <text x="490" y="72" fill="#e4d2e0" font-size="13" text-anchor="middle">learn from X only (no labels)</text>
+  <!-- connectors -->
+  <path d="M460 76 L220 120" stroke="#954c81" stroke-width="2" fill="none"/>
+  <path d="M520 76 L760 120" stroke="#954c81" stroke-width="2" fill="none"/>
+  <!-- left: transformations -->
+  <rect x="40" y="120" width="360" height="150" rx="10" fill="#f2e9ef" stroke="#954c81" stroke-width="2"/>
+  <text x="220" y="148" fill="#551645" font-size="20" text-anchor="middle" font-weight="bold">Transformations</text>
+  <text x="60" y="178" fill="#211112" font-size="15">• New representation of the data</text>
+  <text x="60" y="204" fill="#211112" font-size="15">• Dimensionality reduction → 2-D</text>
+  <text x="60" y="230" fill="#211112" font-size="15">• Feature extraction, topic models</text>
+  <text x="60" y="256" fill="#627a1f" font-size="14">PCA · NMF · t-SNE</text>
+  <!-- right: clustering -->
+  <rect x="580" y="120" width="360" height="150" rx="10" fill="#f2e9ef" stroke="#954c81" stroke-width="2"/>
+  <text x="760" y="148" fill="#551645" font-size="20" text-anchor="middle" font-weight="bold">Clustering</text>
+  <text x="600" y="178" fill="#211112" font-size="15">• Partition data into similar groups</text>
+  <text x="600" y="204" fill="#211112" font-size="15">• e.g. group photos by who appears</text>
+  <text x="600" y="230" fill="#211112" font-size="15">• Each point gets a group label</text>
+  <text x="600" y="256" fill="#627a1f" font-size="14">k-Means · Agglomerative · DBSCAN</text>
+</svg>

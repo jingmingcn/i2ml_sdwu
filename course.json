@@ -58,7 +58,7 @@
       "id": 3,
       "title": "Unsupervised Learning & Preprocessing",
       "summary": "Scaling, dimensionality reduction, and clustering.",
-      "visible": false,
+      "visible": true,
       "resources": {
         "slides":   { "file": "pdf/03-unsupervised-learning.pdf", "visible": true },
         "exercise": { "file": "pdf/03-unsupervised-learning-exercise.pdf", "visible": true },

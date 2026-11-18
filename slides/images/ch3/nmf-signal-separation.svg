@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="360" height="280" viewBox="0 0 360 280" xmlns="http://www.w3.org/2000/svg">
+  <text x="40" y="30" fill="#551645" font-size="12">3 sources</text>
+  <path d="M30 55 q15 -20 30 0 t30 0 t30 0" stroke="#954c81" fill="none" stroke-width="2"/>
+  <path d="M30 90 l15 -15 l15 25 l15 -20 l15 15 l15 -10" stroke="#627a1f" fill="none" stroke-width="2"/>
+  <path d="M30 125 q30 -25 60 0 t60 0" stroke="#551645" fill="none" stroke-width="2"/>
+  <path d="M150 90 L210 90" stroke="#8c8c8c" stroke-width="2" marker-end="url(#mix)"/>
+  <defs><marker id="mix" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#8c8c8c"/></marker></defs>
+  <text x="180" y="80" fill="#8c8c8c" font-size="11" text-anchor="middle">mix</text>
+  <rect x="215" y="55" width="120" height="70" fill="#f2e9ef" stroke="#954c81"/>
+  <text x="275" y="95" fill="#551645" font-size="11" text-anchor="middle">100 mixed</text>
+  <text x="275" y="110" fill="#551645" font-size="11" text-anchor="middle">channels</text>
+  <!-- recover -->
+  <path d="M180 150 L180 185" stroke="#627a1f" stroke-width="2" marker-end="url(#rc)"/>
+  <defs><marker id="rc" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#627a1f"/></marker></defs>
+  <text x="195" y="172" fill="#627a1f" font-size="11">NMF</text>
+  <text x="40" y="205" fill="#551645" font-size="12">recovered ≈ originals</text>
+  <path d="M30 230 q15 -20 30 0 t30 0 t30 0" stroke="#954c81" fill="none" stroke-width="2"/>
+  <path d="M30 258 l15 -15 l15 25 l15 -20 l15 15 l15 -10" stroke="#627a1f" fill="none" stroke-width="2"/>
+</svg>

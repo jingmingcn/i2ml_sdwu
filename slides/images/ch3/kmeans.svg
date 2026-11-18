@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="360" height="280" viewBox="0 0 360 280" xmlns="http://www.w3.org/2000/svg">
+  <!-- points colored by cluster -->
+  <g fill="#954c81"><circle cx="70" cy="80" r="6"/><circle cx="95" cy="60" r="6"/><circle cx="55" cy="105" r="6"/><circle cx="90" cy="100" r="6"/></g>
+  <g fill="#627a1f"><circle cx="250" cy="70" r="6"/><circle cx="275" cy="95" r="6"/><circle cx="240" cy="110" r="6"/><circle cx="290" cy="75" r="6"/></g>
+  <g fill="#af79a1"><circle cx="150" cy="210" r="6"/><circle cx="180" cy="195" r="6"/><circle cx="135" cy="185" r="6"/><circle cx="175" cy="225" r="6"/></g>
+  <!-- centroids -->
+  <path d="M72 82 l10 0 m-5 -5 l0 10" stroke="#551645" stroke-width="3"/>
+  <rect x="68" y="78" width="12" height="12" fill="none" stroke="#551645" stroke-width="2.5"/>
+  <rect x="258" y="80" width="12" height="12" fill="none" stroke="#551645" stroke-width="2.5"/>
+  <rect x="156" y="202" width="12" height="12" fill="none" stroke="#551645" stroke-width="2.5"/>
+  <text x="180" y="30" fill="#551645" font-size="13" text-anchor="middle" font-weight="bold">□ = centroid (mean of its points)</text>
+  <!-- loop arrows -->
+  <path d="M320 150 a30 30 0 1 1 -2 -20" stroke="#8c8c8c" fill="none" stroke-width="2" marker-end="url(#lp)"/>
+  <defs><marker id="lp" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#8c8c8c"/></marker></defs>
+  <text x="300" y="195" fill="#8c8c8c" font-size="10" text-anchor="middle">assign ↔ update</text>
+</svg>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="360" height="280" viewBox="0 0 360 280" xmlns="http://www.w3.org/2000/svg">
+  <line x1="40" y1="240" x2="340" y2="240" stroke="#211112"/>
+  <line x1="40" y1="20" x2="40" y2="240" stroke="#211112"/>
+  <text x="190" y="262" fill="#8c8c8c" font-size="12">feature 1 (≥ 0)</text>
+  <text x="24" y="140" fill="#8c8c8c" font-size="12" transform="rotate(-90 24 140)">feature 2 (≥ 0)</text>
+  <!-- data in positive quadrant -->
+  <g fill="#954c81" opacity="0.7">
+    <circle cx="90" cy="200" r="5"/><circle cx="130" cy="170" r="5"/><circle cx="160" cy="140" r="5"/><circle cx="110" cy="150" r="5"/><circle cx="200" cy="120" r="5"/><circle cx="170" cy="190" r="5"/><circle cx="230" cy="100" r="5"/>
+  </g>
+  <!-- two non-negative component directions -->
+  <path d="M40 240 L250 80" stroke="#551645" stroke-width="2.5" marker-end="url(#n1)"/>
+  <path d="M40 240 L120 60" stroke="#627a1f" stroke-width="2.5" marker-end="url(#n1)"/>
+  <defs><marker id="n1" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#551645"/></marker></defs>
+  <text x="255" y="80" fill="#551645" font-size="12">comp 1</text>
+  <text x="95" y="55" fill="#627a1f" font-size="12">comp 2</text>
+  <text x="190" y="230" fill="#8c8c8c" font-size="10">components point into the data, not orthogonal</text>
+</svg>

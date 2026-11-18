@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="360" height="260" viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg">
+  <line x1="60" y1="220" x2="340" y2="220" stroke="#211112"/>
+  <line x1="60" y1="220" x2="60" y2="20" stroke="#211112"/>
+  <text x="40" y="130" fill="#8c8c8c" font-size="12" transform="rotate(-90 40 130)">test accuracy</text>
+  <!-- bar unscaled -->
+  <rect x="110" y="94" width="70" height="126" fill="#af79a1"/>
+  <text x="145" y="86" fill="#551645" font-size="18" text-anchor="middle" font-weight="bold">0.63</text>
+  <text x="145" y="240" fill="#211112" font-size="13" text-anchor="middle">unscaled</text>
+  <!-- bar scaled -->
+  <rect x="240" y="26" width="70" height="194" fill="#551645"/>
+  <text x="275" y="18" fill="#551645" font-size="18" text-anchor="middle" font-weight="bold">0.97</text>
+  <text x="275" y="240" fill="#211112" font-size="13" text-anchor="middle">MinMax scaled</text>
+</svg>

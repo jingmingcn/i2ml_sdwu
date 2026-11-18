@@ -1,0 +1,395 @@
+%==============================================================================
+%  Lab Report Template — Lab 3: Unsupervised Learning
+%  Course : Introduction to Machine Learning (with Python & scikit-learn)
+%  Follows: notebooks/03-unsupervised-learning-code.ipynb
+%           "Preprocessing, PCA & Clustering"
+%
+%  Compile: pdflatex lab3-unsupervised-learning.tex   (run twice for references)
+%       or: latexmk -pdf lab3-unsupervised-learning.tex
+%
+%  HOW TO USE
+%  ----------
+%  1. Fill in the metadata in the "STUDENT INFORMATION" block below.
+%  2. Run the notebook, then replace every  % TODO  / \textit{TODO} with the
+%     numbers and plots you obtained.
+%  3. Put your figures in a  figures/  subfolder and use \includegraphics.
+%  4. Delete the guidance comments (lines starting with %) before submitting.
+%==============================================================================
+\documentclass[11pt,a4paper]{article}
+
+%------------------------------ packages --------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+%------------------------------ metadata --------------------------------------
+% ========================= STUDENT INFORMATION ===============================
+\newcommand{\Course}{Introduction to Machine Learning}
+\newcommand{\LabNo}{Lab 3}
+\newcommand{\LabTitle}{Unsupervised Learning}
+\newcommand{\StudentName}{Your Name}          % TODO: your full name
+\newcommand{\StudentID}{Student ID}           % TODO: your student number
+\newcommand{\DueDate}{2026.10.21}                 % TODO: the due date
+\newcommand{\Instructor}{Zhang Li \& Jing Ming}
+\newcommand{\Institution}{Shandong Women's University}
+% =============================================================================
+
+%------------------------------ colours & code style --------------------------
+\definecolor{codebg}{RGB}{245,242,247}
+\definecolor{kw}{RGB}{125,15,98}      % keywords (burgundy)
+\definecolor{str}{RGB}{31,51,82}      % strings (navy)
+\definecolor{cmt}{RGB}{91,100,114}    % comments (muted)
+\definecolor{accent}{RGB}{138,28,48}  % headings accent
+
+\lstdefinestyle{py}{
+  language=Python,
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{kw}\bfseries,
+  stringstyle=\color{str},
+  commentstyle=\color{cmt}\itshape,
+  numberstyle=\tiny\color{cmt},
+  numbers=left,
+  numbersep=8pt,
+  frame=leftline,
+  framerule=1.2pt,
+  rulecolor=\color{accent},
+  showstringspaces=false,
+  breaklines=true,
+  tabsize=4,
+  xleftmargin=14pt,
+  aboveskip=10pt,
+  belowskip=6pt,
+}
+\lstset{style=py}
+
+%------------------------------ headers/footers -------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small \Course}
+\rhead{\small \LabNo\ — \LabTitle}
+\cfoot{\small \StudentName\ (\StudentID)}
+\rfoot{\small \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+%------------------------------ helpers ---------------------------------------
+% A grey placeholder box to stand in for a figure you have not added yet.
+\newcommand{\placeholder}[2][8cm]{%
+  \fbox{\parbox[c][5cm][c]{#1}{\centering\color{cmt}\itshape #2}}%
+}
+
+%==============================================================================
+\begin{document}
+
+%------------------------------ title block -----------------------------------
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+{\LARGE\bfseries \Course\par}
+\vspace{0.6cm}
+{\color{accent}\rule{\linewidth}{1.5pt}}\par
+\vspace{0.5cm}
+{\Huge\bfseries \LabNo: \LabTitle\par}
+\vspace{0.3cm}
+{\large Preprocessing, PCA \& Clustering on the Breast Cancer Dataset\par}
+\vspace{0.4cm}
+{\color{accent}\rule{\linewidth}{1.5pt}}\par
+\vspace{2.3cm}
+
+\begin{tabular}{rl}
+  \textbf{Student:}    & \StudentName \\[4pt]
+  \textbf{Student ID:} & \StudentID \\[4pt]
+  \textbf{Instructor:} & \Instructor \\[4pt]
+  \textbf{Institution:}& \Institution \\[4pt]
+  \textbf{Date:}       & \DueDate \\
+\end{tabular}
+
+\vfill
+{\color{cmt}\small Based on \texttt{notebooks/03-unsupervised-learning-code.ipynb}.
+Replace all placeholder text before submission.}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+%==============================================================================
+\section{Objectives}
+%------------------------------------------------------------------------------
+In this lab you preprocess data and explore it \emph{without labels} using
+dimensionality reduction and clustering. By the end you should be able to:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Scale} features correctly, fitting the scaler on the
+        \textbf{training set only}.
+  \item Reduce dimensions with \textbf{principal component analysis (PCA)} and
+        read the \textbf{explained variance ratio}.
+  \item Cluster data with \textbf{k-Means}, \textbf{agglomerative clustering},
+        and \textbf{DBSCAN}.
+  \item Evaluate clusterings against the true labels using the
+        \textbf{adjusted Rand index (ARI)}.
+\end{itemize}
+
+%==============================================================================
+\section{Background}
+%------------------------------------------------------------------------------
+In \emph{unsupervised learning} the algorithm receives only the inputs
+$\mathbf{x}_i$ with \textbf{no target labels} and tries to discover structure in
+the data. This lab covers two common tasks.
+
+\paragraph{Feature scaling.} Many methods are sensitive to the \emph{scale} of
+the features. \lstinline|StandardScaler| standardises each feature to zero mean
+and unit variance,
+\[
+  z = \frac{x - \mu}{\sigma},
+\]
+where $\mu$ and $\sigma$ are the mean and standard deviation \textbf{estimated
+on the training set}. Using test-set statistics would leak information, so the
+scaler is \lstinline|fit| on the training data and then used to
+\lstinline|transform| both sets.
+
+\paragraph{PCA.} Principal component analysis finds orthogonal directions
+(principal components) that capture the most variance in the data. Keeping the
+first few components reduces dimensionality while retaining most information. The
+\textbf{explained variance ratio} reports the fraction of total variance along
+each component.
+
+\paragraph{Clustering.} Clustering groups samples so that points in the same
+group are more similar than points in different groups.
+\begin{itemize}[leftmargin=*]
+  \item \textbf{k-Means} partitions the data into $k$ clusters around centroids.
+  \item \textbf{Agglomerative clustering} merges points bottom-up into a
+        hierarchy until $k$ clusters remain.
+  \item \textbf{DBSCAN} groups dense regions and marks low-density points as
+        \textbf{noise} ($-1$); it chooses the number of clusters itself.
+\end{itemize}
+
+\paragraph{Evaluation.} Because we \emph{do} have the true labels here, we can
+measure how well a clustering recovers them with the \textbf{adjusted Rand index}
+(ARI). ARI ranges from $0$ (random labelling) to $1$ (perfect agreement); it is
+adjusted so that chance groupings score about $0$.
+
+%==============================================================================
+\section{Dataset}
+%------------------------------------------------------------------------------
+We reuse the \textbf{Breast Cancer Wisconsin} dataset, bundled with scikit-learn
+as \lstinline|load_breast_cancer()|. Each sample describes a tumour with 30
+numeric features. The labels (\emph{malignant} / \emph{benign}) are used
+\textbf{only for evaluation} (ARI) — the clustering algorithms never see them.
+
+\begin{table}[H]
+\centering
+\caption{Dataset summary (fixed facts, provided for reference).}
+\label{tab:dataset}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Property} & \textbf{Value} \\
+\midrule
+Source              & \lstinline|sklearn.datasets.load_breast_cancer| \\
+Task type           & Clustering / dimensionality reduction \\
+Number of samples   & 569 \\
+Number of features  & 30 (numeric) \\
+Classes (eval only) & malignant (0), benign (1) \\
+Split               & \lstinline|train_test_split(..., random_state=0)| \\
+Training samples    & 426 \\
+Test samples        & 143 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%==============================================================================
+\section{Methodology}
+%------------------------------------------------------------------------------
+The notebook is organised as five exercises. All tools come from scikit-learn.
+The setup:
+
+\begin{lstlisting}[caption={Imports and data (Setup).},label={lst:setup}]
+import numpy as np
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans, AgglomerativeClustering, DBSCAN
+from sklearn.metrics import adjusted_rand_score
+
+cancer = load_breast_cancer()
+\end{lstlisting}
+
+\noindent The five exercises are:
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Scale correctly.} Split the data (\lstinline|random_state=0|),
+        fit a \lstinline|StandardScaler| on the training set \emph{only}, and
+        transform both sets into \lstinline|X_train_s|, \lstinline|X_test_s|.
+  \item \textbf{PCA to 2 components.} Fit \lstinline|PCA(n_components=2)| on
+        \lstinline|X_train_s|; report the explained variance ratio and the
+        transformed shape.
+  \item \textbf{k-Means.} Scale the whole dataset, run
+        \lstinline|KMeans(n_clusters=2, n_init=10, random_state=0)|, and compute
+        ARI against the labels.
+  \item \textbf{Agglomerative clustering.} Run
+        \lstinline|AgglomerativeClustering(n_clusters=2)| on the scaled data and
+        compute its ARI.
+  \item \textbf{DBSCAN.} Run \lstinline|DBSCAN()| on the scaled data; report the
+        number of clusters found and the number of noise points ($-1$).
+\end{enumerate}
+
+%==============================================================================
+\section{Experiments and Results}
+%------------------------------------------------------------------------------
+% Run the notebook and fill in every \textit{TODO} with the value you obtained.
+
+\subsection{Exercise 1 — Scale correctly}
+Fit the scaler on the training set only, then check that the scaled training
+features have mean $\approx 0$ and standard deviation $\approx 1$.
+\begin{itemize}[leftmargin=*]
+  \item Scaled train mean (first 3 features): \textit{TODO} \quad(expected $\approx[0,0,0]$)
+  \item Scaled train std (first 3 features): \textit{TODO} \quad(expected $\approx[1,1,1]$)
+\end{itemize}
+
+\subsection{Exercise 2 — PCA to 2 components}
+Report the explained variance ratio and the shape after transforming.
+\begin{table}[H]
+\centering
+\caption{PCA with two components (fitted on the scaled training set).}
+\label{tab:pca}
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Quantity} & \textbf{Value} \\
+\midrule
+Explained variance ratio (PC1) & \textit{TODO} \\
+Explained variance ratio (PC2) & \textit{TODO} \\
+Total variance explained       & \textit{TODO} \\
+Shape after PCA                & \textit{TODO} \quad(expected $(426, 2)$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+% Optional: scatter plot of the two principal components, coloured by the label.
+\begin{figure}[H]
+\centering
+% \includegraphics[width=0.7\linewidth]{figures/pca_scatter.png}
+\placeholder[10cm]{(Optional) Scatter of PC1 vs.\ PC2,\\ coloured by the true label.}
+\caption{Data projected onto the first two principal components (optional).}
+\label{fig:pca}
+\end{figure}
+
+\subsection{Exercises 3 \& 4 — k-Means and agglomerative clustering}
+Both algorithms are asked for \lstinline|n_clusters=2| on the fully scaled data.
+Report the ARI of each against the true labels.
+\begin{table}[H]
+\centering
+\caption{Clustering agreement with the true labels (adjusted Rand index).}
+\label{tab:ari}
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Algorithm} & \textbf{ARI} \\
+\midrule
+\lstinline|KMeans(n_clusters=2, n_init=10, random_state=0)| & \textit{TODO} \\
+\lstinline|AgglomerativeClustering(n_clusters=2)|           & \textit{TODO} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Exercise 5 — DBSCAN}
+Run \lstinline|DBSCAN()| with its default parameters on the scaled data.
+\begin{table}[H]
+\centering
+\caption{DBSCAN result with default parameters.}
+\label{tab:dbscan}
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Quantity} & \textbf{Value} \\
+\midrule
+Number of clusters found & \textit{TODO} \\
+Number of noise points ($-1$) & \textit{TODO} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%==============================================================================
+\section{Discussion}
+%------------------------------------------------------------------------------
+Answer with evidence from your tables and figures above:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Scaling (Ex.~1).} Why must the scaler be fitted on the training
+        set only? What could go wrong if you fit it on the whole dataset?
+  \item \textbf{PCA (Ex.~2).} How much of the total variance do the first two
+        components capture? Is two dimensions enough to see the structure?
+  \item \textbf{Clustering quality (Ex.~3--4).} Which algorithm's clusters agreed
+        best with the true labels? Are k-Means and agglomerative clustering close?
+  \item \textbf{DBSCAN (Ex.~5).} With default parameters, how many clusters did
+        DBSCAN find and how many points were labelled noise? What does this tell
+        you about choosing \lstinline|eps| and \lstinline|min_samples|?
+  \item \textbf{Labels vs.\ structure.} The clusters never saw the labels. What
+        does a high ARI suggest about the geometry of the two tumour classes?
+\end{itemize}
+% TODO: write 1--2 paragraphs answering the questions above.
+
+%==============================================================================
+\section{Conclusion}
+%------------------------------------------------------------------------------
+% 3--5 sentences summarising what you learned and the main result.
+% TODO.
+
+%==============================================================================
+% \begin{thebibliography}{9}
+% \bibitem{mueller2016}
+% A.~C. M\"uller and S.~Guido,
+% \emph{Introduction to Machine Learning with Python}.
+% O'Reilly Media, 2016.
+
+% \bibitem{sklearn}
+% F.~Pedregosa et al.,
+% ``Scikit-learn: Machine Learning in Python,''
+% \emph{Journal of Machine Learning Research}, vol.~12, pp.~2825--2830, 2011.
+% \end{thebibliography}
+
+%==============================================================================
+\appendix
+\section{Source Code}
+%------------------------------------------------------------------------------
+% Paste your completed code, or reference the notebook you ran.
+Full code: \texttt{notebooks/03-unsupervised-learning-code.ipynb}. Key solution:
+
+\begin{lstlisting}[caption={Reference solution for Exercises 1--5.}]
+X_train, X_test, y_train, y_test = train_test_split(
+    cancer.data, cancer.target, random_state=0)
+
+# Ex1 - scale, fitting on the training set only
+scaler = StandardScaler().fit(X_train)
+X_train_s = scaler.transform(X_train)
+X_test_s  = scaler.transform(X_test)
+
+# Ex2 - PCA to 2 components
+pca = PCA(n_components=2).fit(X_train_s)
+print("explained variance ratio:", np.round(pca.explained_variance_ratio_, 3))
+print("shape after PCA:", pca.transform(X_train_s).shape)
+
+# Ex3-4 - k-Means and agglomerative clustering on the whole scaled dataset
+X_scaled = StandardScaler().fit_transform(cancer.data)
+km  = KMeans(n_clusters=2, n_init=10, random_state=0).fit(X_scaled)
+ari_kmeans = adjusted_rand_score(cancer.target, km.labels_)
+agg = AgglomerativeClustering(n_clusters=2).fit(X_scaled)
+ari_agg = adjusted_rand_score(cancer.target, agg.labels_)
+print("ARI k-means      :", round(ari_kmeans, 3))
+print("ARI agglomerative:", round(ari_agg, 3))
+
+# Ex5 - DBSCAN
+db = DBSCAN().fit(X_scaled)
+labels = db.labels_
+n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+print("DBSCAN clusters:", n_clusters,
+      "| noise points:", int((labels == -1).sum()))
+\end{lstlisting}
+
+\end{document}

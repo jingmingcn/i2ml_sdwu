@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="260" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+  <text x="200" y="18" fill="#551645" font-size="13" text-anchor="middle">informative feature</text>
+  <line x1="30" y1="120" x2="370" y2="120" stroke="#211112"/>
+  <!-- benign hist (left) -->
+  <path d="M40 120 q40 -70 80 0" fill="#954c81" opacity="0.6"/>
+  <!-- malignant hist (right) -->
+  <path d="M250 120 q40 -70 80 0" fill="#627a1f" opacity="0.6"/>
+  <text x="80" y="135" fill="#954c81" font-size="11" text-anchor="middle">benign</text>
+  <text x="290" y="135" fill="#627a1f" font-size="11" text-anchor="middle">malignant</text>
+  <text x="200" y="150" fill="#8c8c8c" font-size="11" text-anchor="middle">↑ clean separation</text>
+  <text x="200" y="185" fill="#551645" font-size="13" text-anchor="middle">uninformative feature</text>
+  <line x1="30" y1="250" x2="370" y2="250" stroke="#211112"/>
+  <path d="M120 250 q40 -55 80 0" fill="#954c81" opacity="0.55"/>
+  <path d="M160 250 q40 -55 80 0" fill="#627a1f" opacity="0.55"/>
+  <text x="200" y="248" fill="#8c8c8c" font-size="11" text-anchor="middle">overlap</text>
+</svg>

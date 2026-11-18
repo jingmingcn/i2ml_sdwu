@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="140" viewBox="0 0 900 140" xmlns="http://www.w3.org/2000/svg">
+  <rect x="20" y="45" width="150" height="50" rx="8" fill="#f2e9ef" stroke="#954c81"/>
+  <text x="95" y="75" fill="#551645" font-size="15" text-anchor="middle">X_train</text>
+  <path d="M170 70 L250 70" stroke="#627a1f" stroke-width="2.5" marker-end="url(#a2)"/>
+  <defs><marker id="a2" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#627a1f"/></marker></defs>
+  <text x="210" y="60" fill="#627a1f" font-size="13" text-anchor="middle">fit</text>
+  <rect x="250" y="35" width="170" height="70" rx="8" fill="#551645"/>
+  <text x="335" y="66" fill="#fff" font-size="15" text-anchor="middle" font-weight="bold">scaler</text>
+  <text x="335" y="88" fill="#e4d2e0" font-size="12" text-anchor="middle">min_, scale_</text>
+  <!-- transform train -->
+  <path d="M420 55 L520 55" stroke="#954c81" stroke-width="2.5" marker-end="url(#a3)"/>
+  <defs><marker id="a3" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#954c81"/></marker></defs>
+  <text x="470" y="46" fill="#954c81" font-size="12" text-anchor="middle">transform</text>
+  <rect x="520" y="30" width="160" height="48" rx="8" fill="#e4d2e0" stroke="#954c81"/>
+  <text x="600" y="59" fill="#551645" font-size="14" text-anchor="middle">X_train_scaled</text>
+  <!-- transform test -->
+  <path d="M420 85 L520 110" stroke="#954c81" stroke-width="2.5" marker-end="url(#a3)"/>
+  <rect x="520" y="95" width="160" height="40" rx="8" fill="#e4d2e0" stroke="#954c81"/>
+  <text x="600" y="120" fill="#551645" font-size="14" text-anchor="middle">X_test_scaled</text>
+  <text x="760" y="70" fill="#8c8c8c" font-size="13">one `fit`,</text>
+  <text x="760" y="90" fill="#8c8c8c" font-size="13">many `transform`s</text>
+</svg>

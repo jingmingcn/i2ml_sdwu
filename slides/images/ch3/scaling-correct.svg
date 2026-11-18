@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <text x="200" y="20" fill="#627a1f" font-size="15" text-anchor="middle" font-weight="bold">✓ CORRECT</text>
+  <text x="200" y="40" fill="#8c8c8c" font-size="12" text-anchor="middle">same transform on both</text>
+  <line x1="40" y1="260" x2="370" y2="260" stroke="#211112"/>
+  <line x1="40" y1="260" x2="40" y2="60" stroke="#211112"/>
+  <!-- train cluster -->
+  <circle cx="130" cy="180" r="6" fill="#954c81"/><circle cx="150" cy="160" r="6" fill="#954c81"/><circle cx="110" cy="200" r="6" fill="#954c81"/><circle cx="140" cy="195" r="6" fill="#954c81"/>
+  <text x="130" y="140" fill="#954c81" font-size="12" text-anchor="middle">train</text>
+  <!-- test cluster slightly shifted, same relation -->
+  <circle cx="250" cy="150" r="6" fill="#627a1f"/><circle cx="270" cy="135" r="6" fill="#627a1f"/><circle cx="235" cy="165" r="6" fill="#627a1f"/>
+  <text x="255" y="115" fill="#627a1f" font-size="12" text-anchor="middle">test</text>
+  <text x="200" y="285" fill="#8c8c8c" font-size="11" text-anchor="middle">test may fall slightly outside [0,1] — that's fine</text>
+</svg>

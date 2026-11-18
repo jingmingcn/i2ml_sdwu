@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="320" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
+  <!-- quadrant grid -->
+  <line x1="200" y1="10" x2="200" y2="310" stroke="#ddd"/>
+  <line x1="10" y1="160" x2="390" y2="160" stroke="#ddd"/>
+  <!-- Standard -->
+  <text x="105" y="26" fill="#551645" font-size="12" text-anchor="middle">Standard (μ=0,σ=1)</text>
+  <circle cx="100" cy="95" r="4" fill="#954c81"/><circle cx="120" cy="80" r="4" fill="#954c81"/><circle cx="85" cy="110" r="4" fill="#954c81"/><circle cx="110" cy="105" r="4" fill="#954c81"/><circle cx="95" cy="85" r="4" fill="#954c81"/>
+  <!-- MinMax -->
+  <text x="300" y="26" fill="#551645" font-size="12" text-anchor="middle">MinMax [0,1]</text>
+  <rect x="250" y="55" width="100" height="85" fill="none" stroke="#627a1f" stroke-dasharray="3"/>
+  <circle cx="262" cy="130" r="4" fill="#954c81"/><circle cx="340" cy="62" r="4" fill="#954c81"/><circle cx="300" cy="95" r="4" fill="#954c81"/><circle cx="280" cy="110" r="4" fill="#954c81"/>
+  <!-- Robust -->
+  <text x="105" y="180" fill="#551645" font-size="12" text-anchor="middle">Robust (outlier-safe)</text>
+  <circle cx="100" cy="250" r="4" fill="#954c81"/><circle cx="115" cy="240" r="4" fill="#954c81"/><circle cx="90" cy="260" r="4" fill="#954c81"/><circle cx="105" cy="248" r="4" fill="#954c81"/>
+  <circle cx="175" cy="300" r="5" fill="#b00" opacity="0.7"/><text x="178" y="300" fill="#b00" font-size="10">outlier ignored</text>
+  <!-- Normalizer -->
+  <text x="300" y="180" fill="#551645" font-size="12" text-anchor="middle">Normalizer (unit len)</text>
+  <circle cx="300" cy="250" r="45" fill="none" stroke="#627a1f" stroke-dasharray="3"/>
+  <circle cx="345" cy="250" r="4" fill="#954c81"/><circle cx="318" cy="215" r="4" fill="#954c81"/><circle cx="265" cy="235" r="4" fill="#954c81"/><circle cx="280" cy="285" r="4" fill="#954c81"/>
+</svg>
