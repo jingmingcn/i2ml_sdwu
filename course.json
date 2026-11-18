@@ -62,7 +62,8 @@
       "resources": {
         "slides":   { "file": "pdf/03-unsupervised-learning.pdf", "visible": true },
         "exercise": { "file": "pdf/03-unsupervised-learning-exercise.pdf", "visible": true },
-        "notebook": { "file": "notebooks/03-unsupervised-learning-code.ipynb", "visible": true }
+        "notebook": { "file": "notebooks/03-unsupervised-learning-code.ipynb", "visible": true },
+        "lab_latex": { "file": "tex/03-unsupervised-learning.tex", "visible": true }
       }
     },
     {
